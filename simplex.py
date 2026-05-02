@@ -21,18 +21,26 @@ def getArrayInput(prompt):
     
     array = []
     
-    rows = input("enter number of rows")
-    cols = input("enter number of columns")
+    rows = input("enter number of rows: ")
+    cols = input("enter number of columns: ")
     
-    for i in range(rows):
-        row = input(f"enter row {i+1} values separated by space")
-        row_values = list(map(float, row.split()))
-        if len(row_values) != cols:
-            print("Invalid number of columns. Please try again.")
+    row = int(rows)
+    col = int(cols)
+    
+    for i in range(row):
+        r = input(f"enter row {i+1} values separated by space: ")
+        vals = list(int(x) for x in r.split())
+        if len(vals) != col:
+            print(f"Error: expected {col} values, got {len(vals)}. Please try again.")
             return getArrayInput(prompt)
-        array.append(row_values)
+        array.append(vals)
         
-    return np.array(array)
+    np_array = np.array(array)
+    
+    print(np_array)
+    
+    return np_array
+        
     
     
 
@@ -40,8 +48,7 @@ def getArrayInput(prompt):
 def main():
     #initialze variables
     
-    A = getArrayInput("Enter in array A")
-    print(A)
+    A = getArrayInput("Enter in array A: ")
 
 
 
