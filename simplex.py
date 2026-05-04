@@ -40,15 +40,27 @@ def getArrayInput(prompt):
     print(np_array)
     
     return np_array
+
+def doSimplex(A, b, c, x0):
+    #we take the inputs and then run the simplex until our reduced costs are all negative or zero
+    
+    #step 0: find a basic feasible point
+    
+    #step 1: reduced costs
         
     
     
 
 
 def main():
-    #initialze variables
-    
+    #initialze variables, in this case the arrays for the method.
     A = getArrayInput("Enter in array A: ")
+    B = getArrayInput("Enter in array B: ")
+    C = getArrayInput("Enter in array C: ")
+    x0 = getArrayInput("Enter in array x0: ")
+    
+    #now for the method
+    
 
 
 
