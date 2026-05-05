@@ -37,16 +37,42 @@ def getArrayInput(prompt):
         
     np_array = np.array(array)
     
-    print(np_array)
+    #print(np_array)
     
     return np_array
 
-def doSimplex(A, b, c, x0):
-    #we take the inputs and then run the simplex until our reduced costs are all negative or zero
+# do simplex starts with basic maximization,
+def doSimplex(A, b, c):
+    #we take the inputs and then run the simplex until our reduced costs are all non-negative, which means we are at an optimal point.
+    
+    #I'll handle the unboundness, infeasibility and mismatch cases later:
+    #so first assumption is that the things match properly
     
     #step 0: find a basic feasible point
+    #next assumption is assuming identity matrix in the basis
+    r = A.shape[0]
+    c = A.shape[1]
+    
+    x = np.zeros(c);
+    
+    Id = np.eye(r)
+    AB = A[:, r:]
+    
+    
+    #check assumption:
+    if np.array_equal(AB, Id):
+        print("okay")
+    else:
+        print("bruh")
+        
+    #if we proceed then the reverse layout of b will be the last entries in the x vector
+    x[-r:] = b
+    
+    
     
     #step 1: reduced costs
+    #r = cNT − cBT AB-1 AN
+    
         
     
     
@@ -57,9 +83,9 @@ def main():
     A = getArrayInput("Enter in array A: ")
     B = getArrayInput("Enter in array B: ")
     C = getArrayInput("Enter in array C: ")
-    x0 = getArrayInput("Enter in array x0: ")
     
     #now for the method
+    doSimplex(A, B, C)
     
 
 
