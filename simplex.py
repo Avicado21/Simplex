@@ -53,10 +53,14 @@ def doSimplex(A, b, c):
     r = A.shape[0]
     c = A.shape[1]
     
+    # get our x vector
     x = np.zeros(c);
     
+    # get id
     Id = np.eye(r)
-    AB = A[:, r:]
+    AB = A[:, r-1:]
+    print(AB)
+    print(Id)
     
     
     #check assumption:
@@ -67,11 +71,31 @@ def doSimplex(A, b, c):
         
     #if we proceed then the reverse layout of b will be the last entries in the x vector
     x[-r:] = b
+    print(x)
     
     
     
     #step 1: reduced costs
     #r = cNT − cBT AB-1 AN
+    
+    done = False
+    
+    # while not done, we keep on doing each pivot and iteration
+    while(not done):
+        # do things
+        
+        cNT = c[:c-r]
+        cBT = c[c-r:]
+        
+        ABinv = np.linalg.inv(AB)
+        AN = A[:, :c-r]
+        
+        costs = cNT - cBT @ ABinv @ AN
+        
+        print(costs)
+        
+    
+    
     
         
     
@@ -80,12 +104,24 @@ def doSimplex(A, b, c):
 
 def main():
     #initialze variables, in this case the arrays for the method.
+    '''
     A = getArrayInput("Enter in array A: ")
-    B = getArrayInput("Enter in array B: ")
-    C = getArrayInput("Enter in array C: ")
+    b = getArrayInput("Enter in array B: ")
+    c = getArrayInput("Enter in array C: ")
+    '''
+    #make test A, b and c
+    
+    A = np.array([[1, 1, 1, 0, 0], [1, 0, 0, 1, 0], [0, 1, 0, 0, 1]], dtype=float)
+
+    b = np.array([4, 3, 2], dtype=float)
+
+    c = np.array([3, 2, 0, 0, 0], dtype=float)
+
+    
+    
     
     #now for the method
-    doSimplex(A, B, C)
+    doSimplex(A, b, c)
     
 
 
