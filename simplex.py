@@ -50,15 +50,15 @@ def doSimplex(A, b, c):
     
     #step 0: find a basic feasible point
     #next assumption is assuming identity matrix in the basis
-    r = A.shape[0]
-    c = A.shape[1]
+    row = A.shape[0]
+    col = A.shape[1]
     
     # get our x vector
-    x = np.zeros(c);
+    x = np.zeros(col);
     
     # get id
-    Id = np.eye(r)
-    AB = A[:, r-1:]
+    Id = np.eye(row)
+    AB = A[:, row-1:]
     print(AB)
     print(Id)
     
@@ -70,7 +70,7 @@ def doSimplex(A, b, c):
         print("bruh")
         
     #if we proceed then the reverse layout of b will be the last entries in the x vector
-    x[-r:] = b
+    x[-row:] = b
     print(x)
     
     
@@ -84,11 +84,12 @@ def doSimplex(A, b, c):
     while(not done):
         # do things
         
-        cNT = c[:c-r]
-        cBT = c[c-r:]
+        cNT = c[:col-row]
+        cBT = c[col-row:]
         
         ABinv = np.linalg.inv(AB)
-        AN = A[:, :c-r]
+        
+        AN = A[:, :col-row]
         
         costs = cNT - cBT @ ABinv @ AN
         
