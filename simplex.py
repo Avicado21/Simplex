@@ -43,7 +43,8 @@ def getArrayInput(prompt):
 
 # do simplex starts with basic maximization,
 def doSimplex(A, b, c):
-    #we take the inputs and then run the simplex until our reduced costs are all non-negative, which means we are at an optimal point.
+    #we take the inputs and then run the simplex until our reduced costs are all negative, which means we are at an optimal point.
+    #that is, for the maximization route
     
     #I'll handle the unboundness, infeasibility and mismatch cases later:
     #so first assumption is that the things match properly
@@ -81,6 +82,7 @@ def doSimplex(A, b, c):
     done = False
     
     # while not done, we keep on doing each pivot and iteration
+    #this is maximizing route
     while(not done):
         # do things
         
@@ -93,7 +95,16 @@ def doSimplex(A, b, c):
         
         costs = cNT - cBT @ ABinv @ AN
         
-        print(costs)
+        if np.all(costs <= 0):
+            done = True
+            
+        else:
+        # find the leaving and entering variables
+        # rewrite the basis and all needes matrixes for the next iteration
+        
+        
+            
+            
         
     
     
