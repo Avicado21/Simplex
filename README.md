@@ -83,9 +83,9 @@ print(result.objective)  # 11.0
 6. **Repeat** — Until optimal, unbounded, or infeasible
 
 ## Project Structure
-Simplex/
-├── simplex.py      # Main implementation
-└── README.md       # This file
+#### Simplex/
+#### ├── simplex.py      # Main implementation
+#### └── README.md       # This file
 
 ## Limitations
 
