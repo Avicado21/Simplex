@@ -9,7 +9,7 @@ This project implements the simplex algorithm for solving linear programs of the
 **Maximize/Minimize** c^T x  
 **Subject to:** Ax = b, x ≥ 0
 
-Developed as part of my coursework in Introduction to Optimization at the University of Pittsburgh.
+Developed as derivation from my coursework in Introduction to Optimization at the University of Pittsburgh.
 
 ## Features
 
@@ -60,18 +60,18 @@ print(result.objective)  # 11.0
 ```
 
 ## Example Output
-==================================================
-SIMPLEX SOLVER: Maximize
-Initial x = [0. 0. 4. 3. 2.], objective = 0.0000
-Iteration 1: x1 enters, x3 leaves | objective = 9.0000
-Iteration 2: x2 enters, x5 leaves | objective = 11.0000
-Optimal: x = [3. 1. 0. 0. 1.], objective = 11.0000
-==================================================
-RESULT SUMMARY
-Status: optimal
-Solution: [3. 1. 0. 0. 1.]
-Objective: 11.0000
-Iterations: 2
+### ==================================================
+### SIMPLEX SOLVER: Maximize
+### Initial x = [0. 0. 4. 3. 2.], objective = 0.0000
+### Iteration 1: x1 enters, x3 leaves | objective = 9.0000
+### Iteration 2: x2 enters, x5 leaves | objective = 11.0000
+### Optimal: x = [3. 1. 0. 0. 1.], objective = 11.0000
+### ==================================================
+### RESULT SUMMARY
+### Status: optimal
+### Solution: [3. 1. 0. 0. 1.]
+### Objective: 11.0000
+### Iterations: 2
 
 ## How It Works
 
