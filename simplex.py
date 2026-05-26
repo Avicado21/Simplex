@@ -98,6 +98,11 @@ def doSimplex(A, b, c):
             # d = B⁻¹ * a_j tells us how basic vars change per unit increase in entering var
             d = np.linalg.solve(AB, A[:, entering])
             
+            # unboundedness check: if no positive d entries, we can go to infinity
+            if np.all(d <= 0):
+                print("Problem is unbounded!")
+                return None, np.inf
+            
             # now we have the direction vector, we need to find the step size
             # we do this by finding the minimum ratio of xB / dB for all positive entries in dB
             x_B = x[basis]
@@ -141,17 +146,34 @@ def main():
     '''
     #make test A, b and c
     
+    '''
+    #basic feasible check
     A = np.array([[1, 1, 1, 0, 0], [1, 0, 0, 1, 0], [0, 1, 0, 0, 1]], dtype=float)
 
     b = np.array([4, 3, 2], dtype=float)
 
     c = np.array([3, 2, 0, 0, 0], dtype=float)
+    '''
+    
+    #unbounded check
+    # Maximize 2x₁ + x₂
+    # Subject to:
+    #   -x₁ + x₂ ≤ 1
+    #    x₁ - x₂ ≤ 1
+    #   x₁, x₂ ≥ 0
+
+    A_unbounded = np.array([[-1, 1, 1, 0], [1, -1, 0, 1]], dtype=float)
+
+    b_unbounded = np.array([1, 1], dtype=float)
+
+    c_unbounded = np.array([2, 1, 0, 0], dtype=float)
 
     
     
     
     #now for the method
-    doSimplex(A, b, c)
+    #doSimplex(A, b, c)
+    doSimplex(A_unbounded, b_unbounded, c_unbounded)
     
 
 
