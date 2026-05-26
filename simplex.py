@@ -41,27 +41,45 @@ def getArrayInput(prompt):
     
     return np_array
 
-# do simplex starts with basic maximization,
-def doSimplex(A, b, c):
+
+#alright 2 phase simplex check:
+def needs_two_phase(A):
+    row, col = A.shape
+    
+    # Check if last m columns form identity matrix
+    I_check = A[:, -row:]
+    
+    if np.allclose(I_check, np.eye(row)):
+        return False  # Easy basis exists, one-phase is fine
+    else:
+        return True   # Need two-phase
+
+def doSimplex(A, b, c, basis=None):
     #we take the inputs and then run the simplex until our reduced costs are all negative, which means we are at an optimal point.
     #that is, for the maximization route
     
     #I'll handle the unboundness, infeasibility and mismatch cases later:
     #so first assumption is that the things match properly
     
-    #step 0: find a basic feasible point
-    #next assumption is assuming identity matrix in the basis
-    row, col = A.shape  # row = m (constraints), col = n (variables)
+    row, col = A.shape
     
-    # Track basis by column indices, not by copying columns
-    # Initially: slack variables (last m columns) are basic, original variables are nonbasic
-    basis = list(range(col - row, col))      # e.g., [2, 3, 4] for 3x5 matrix
-    nonbasis = list(range(col - row))        # e.g., [0, 1]
+    #step 0: find a basic feasible point
+    if basis is None:
+        # assume identity matrix in last m columns
+        basis = list(range(col - row, col))
+    else:
+        # use provided basis
+        basis = list(basis)  # copy to avoid mutating original
+    
+    # nonbasis is everything not in basis
+    nonbasis = [i for i in range(col) if i not in basis]
     
     # get our x vector
-    # nonbasic vars = 0, basic vars = b (works because B = I, so x_B = B⁻¹b = b)
     x = np.zeros(col)
-    x[basis] = b
+    AB = A[:, basis]
+    x[basis] = np.linalg.solve(AB, b)  # handles non-identity basis too
+    
+    # ... rest stays the same
     
     print(f"Initial x = {x}, objective = {c @ x}")
     
@@ -133,7 +151,35 @@ def doSimplex(A, b, c):
     
     print(f"\nOptimal: x = {x}, objective = {c @ x}")
     
-    return x, c @ x
+    return x, c @ x, basis
+
+def two_phase_simplex(A, b, c):
+    row, col = A.shape
+    
+    # Phase I: build augmented problem
+    A_phase1 = np.hstack([A, np.eye(row)])
+    c_phase1 = np.concatenate([np.zeros(col), -np.ones(row)])
+    
+    # Run simplex on Phase I
+    x_phase1, obj_phase1, basis_phase1 = doSimplex(A_phase1, b, c_phase1)
+    
+    # Check feasibility
+    if not np.isclose(obj_phase1, 0):
+        print("Problem is infeasible")
+        return None, None, None
+    
+    # Phase II: extract basis indices that are in original problem (< col)
+    # Filter out any artificial variables still in basis
+    basis_for_phase2 = [i for i in basis_phase1 if i < col]
+    
+    # If artificials still in basis at zero value, need to handle
+    if len(basis_for_phase2) < row:
+        print("Warning: artificial variable in basis (degenerate case)")
+        # For now, just proceed — advanced handling needed for full robustness
+    
+    x, obj, basis = doSimplex(A, b, c, basis=basis_for_phase2)
+    return x, obj, basis
+
     
 
 
@@ -155,6 +201,7 @@ def main():
     c = np.array([3, 2, 0, 0, 0], dtype=float)
     '''
     
+    '''
     #unbounded check
     # Maximize 2x₁ + x₂
     # Subject to:
@@ -167,13 +214,28 @@ def main():
     b_unbounded = np.array([1, 1], dtype=float)
 
     c_unbounded = np.array([2, 1, 0, 0], dtype=float)
-
+    '''
     
-    
-    
-    #now for the method
+    #now for the method calls
     #doSimplex(A, b, c)
-    doSimplex(A_unbounded, b_unbounded, c_unbounded)
+    #doSimplex(A_unbounded, b_unbounded, c_unbounded)
+    
+    #two phase edition:
+    # Maximize x₁ + x₂
+    # Subject to:
+    #   x₁ + 2x₂ = 4
+    #   2x₁ + x₂ = 5
+    #   x₁, x₂ ≥ 0
+
+    A_twophase = np.array([[1, 2],
+                            [2, 1]], dtype=float)
+    b_twophase = np.array([4, 5], dtype=float)
+    c_twophase = np.array([1, 1], dtype=float)
+    
+    if needs_two_phase(A_twophase):
+        x, obj, basis = two_phase_simplex(A_twophase, b_twophase, c_twophase)
+    else:
+        x, obj, basis = doSimplex(A_twophase, b_twophase, c_twophase)
     
 
 
